@@ -6,12 +6,16 @@ import {
   Button,
   StyleSheet,
   TouchableOpacity,
+  ScrollView,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Footer from "../components/Footer";
+import { useNavigation } from "@react-navigation/native";
 
 const Suppliers = () => {
+  const navigation = useNavigation();
+
   const [number, setNumber] = useState("");
   const [date, setDate] = useState("");
   const [quantity, setQuantity] = useState("");
@@ -25,6 +29,8 @@ const Suppliers = () => {
     console.log("date:", date);
     console.log("quantity:", quantity);
     console.log("Category1:", selectedCategory1);
+
+    navigation.navigate("ViewOrders");
   };
 
   return (
@@ -93,6 +99,7 @@ const Suppliers = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 0,
   },
   card: {
     flex: 1,

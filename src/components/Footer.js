@@ -11,12 +11,8 @@ const Footer = ({ navigation }) => {
         alignItems: "center",
         paddingVertical: 10,
       }}>
-      <TouchableOpacity onPress={() => navigation.navigate("Home")}>
-        <Icon name="home" size={30} color="#3498db" />
-      </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate("ViewOrders")}>
-        <Icon name="list" size={30} color="#3498db" />
-      </TouchableOpacity>
+      <Icon name="home" size={30} color="#3498db" />
+      <Icon name="list" size={30} color="#3498db" />
       {/* Add similar TouchableOpacity for other icons */}
       <Icon name="search" size={30} color="#3498db" />
       <Icon name="bell" size={30} color="#3498db" />

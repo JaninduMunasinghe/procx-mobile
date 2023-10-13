@@ -1,38 +1,69 @@
 import React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
 import Footer from "../components/Footer";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import the icon library
+import { useNavigation } from "@react-navigation/native";
 
 const ViewOrders = () => {
+  const navigation = useNavigation();
+
+  const navigateToPendingOrders = () => {
+    // Navigate to PendingOrder component
+    navigation.navigate("PendingOrders");
+  };
+
+  const navigateToApproveOrders = () => {
+    // Navigate to ApproveOrders component
+    navigation.navigate("ApprovedOrders");
+  };
+
+  const navigateToRejectedOrders = () => {
+    // Navigate to RejectedOrders component
+    navigation.navigate("RejectedOrders");
+  };
+
+  const navigateToSuppliers = () => {
+    // Navigate to FourthCard component
+    navigation.navigate("Suppliers");
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>View All Orders</Text>
+      <Text style={styles.heading}>Dashboard</Text>
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.cardContainer}>
-          <View style={styles.card}>
+          <TouchableOpacity
+            onPress={navigateToPendingOrders}
+            style={styles.card}>
             <Icon name="clock-o" size={40} color="#3498db" />
             <Text style={styles.cardTitle}>Pending Orders</Text>
-            {/* Render pending orders here */}
-          </View>
-          <View style={styles.card}>
+          </TouchableOpacity>
+          <TouchableOpacity
+            onPress={navigateToApproveOrders}
+            style={styles.card}>
             <Icon name="check" size={40} color="#2ecc71" />
             <Text style={styles.cardTitle}>Approve Orders</Text>
-            {/* Render approved orders here */}
-          </View>
+          </TouchableOpacity>
         </View>
 
         <View style={styles.cardContainer}>
-          <View style={styles.card}>
+          <TouchableOpacity
+            onPress={navigateToRejectedOrders}
+            style={styles.card}>
             <Icon name="times" size={40} color="#e74c3c" />
             <Text style={styles.cardTitle}>Rejected Orders</Text>
-            {/* Render rejected orders here */}
-          </View>
-          <View style={styles.card}>
-            <Icon name="star" size={40} color="#f39c12" />
-            <Text style={styles.cardTitle}>Fourth Card</Text>
-            {/* Render content for the fourth card here */}
-          </View>
+          </TouchableOpacity>
+          <TouchableOpacity onPress={navigateToSuppliers} style={styles.card}>
+            <Icon name="plus-circle" size={40} color="#f39c12" />
+            <Text style={styles.cardTitle}>Create Order</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
@@ -44,7 +75,10 @@ const ViewOrders = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 20,
+    paddingBottom: 0,
     backgroundColor: "#ffffff",
   },
   heading: {

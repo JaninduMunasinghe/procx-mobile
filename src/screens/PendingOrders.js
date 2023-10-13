@@ -53,7 +53,10 @@ const PendingOrders = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 20,
+    paddingBottom: 0,
     backgroundColor: "#ffffff",
   },
   heading: {
@@ -75,10 +78,10 @@ const styles = StyleSheet.create({
   orderItem: {
     marginBottom: 20,
     padding: 15,
-    backgroundColor: "#ecf0f1",
+    backgroundColor: "#ffffff",
     borderRadius: 10,
     borderWidth: 1,
-    borderColor: "#bdc3c7", // Border color
+    borderColor: "#f1f1f1", // Border color
     shadowColor: "#2c3e50", // Shadow color
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,

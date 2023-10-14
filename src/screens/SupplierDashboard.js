@@ -10,32 +10,32 @@ import Footer from "../components/Footer";
 import Icon from "react-native-vector-icons/FontAwesome"; // Import the icon library
 import { useNavigation } from "@react-navigation/native";
 
-const ViewOrders = () => {
+const SupplierDashboard = () => {
   const navigation = useNavigation();
 
   const navigateToPendingOrders = () => {
     // Navigate to PendingOrder component
-    navigation.navigate("PendingOrders");
+    navigation.navigate("SupplierViewOrders");
   };
 
   const navigateToApproveOrders = () => {
     // Navigate to ApproveOrders component
-    navigation.navigate("ApprovedOrders");
+    navigation.navigate("SupplierApproved");
   };
 
   const navigateToRejectedOrders = () => {
     // Navigate to RejectedOrders component
-    navigation.navigate("RejectedOrders");
+    navigation.navigate("SupplierRejected");
   };
 
-  const navigateToSuppliers = () => {
+  const navigateToCompleted = () => {
     // Navigate to FourthCard component
-    navigation.navigate("Suppliers");
+    navigation.navigate("SupplierCompleted");
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Dashboard</Text>
+      <Text style={styles.heading}>Supplier Dashboard</Text>
 
       <ScrollView contentContainerStyle={styles.contentContainer}>
         <View style={styles.cardContainer}>
@@ -60,9 +60,9 @@ const ViewOrders = () => {
             <Icon name="times" size={40} color="#e74c3c" />
             <Text style={styles.cardTitle}>Rejected Orders</Text>
           </TouchableOpacity>
-          <TouchableOpacity onPress={navigateToSuppliers} style={styles.card}>
+          <TouchableOpacity onPress={navigateToCompleted} style={styles.card}>
             <Icon name="plus-circle" size={40} color="#f39c12" />
-            <Text style={styles.cardTitle}>Create Order</Text>
+            <Text style={styles.cardTitle}>Completed Order</Text>
           </TouchableOpacity>
         </View>
       </ScrollView>
@@ -121,4 +121,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ViewOrders;
+export default SupplierDashboard;

@@ -19,8 +19,27 @@ const Suppliers = () => {
   const [number, setNumber] = useState("");
   const [date, setDate] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [selectedCategory1, setSelectedCategory1] = useState("");
   const [selectedCategory2, setSelectedCategory2] = useState("");
+  /* const [itemDropdowns, setItemDropdowns] = useState([{ id: 1, value: "" }]); */
+  const [itemDropdowns, setItemDropdowns] = useState([
+    { id: 1, item: "item 1", quantity: "" },
+  ]);
+
+  const suppliersFromDatabase = [
+    { label: "Supplier 1", value: "Supplier 1" },
+    { label: "Supplier 2", value: "Supplier 2" },
+    // Fetch more suppliers from the database
+  ];
+  const handleSupplierChange = (value) => {
+    console.log("Selected Supplier:", value);
+    setSelectedSupplier(value);
+    console.log("State After Update:", selectedSupplier);
+  };
+
+  // Define the array of dropdown items
+  const dropdownItems = ["Item 1", "Item 2", "Item 3"];
 
   const handleSubmit = () => {
     // Handle form submission here
@@ -29,69 +48,174 @@ const Suppliers = () => {
     console.log("date:", date);
     console.log("quantity:", quantity);
     console.log("Category1:", selectedCategory1);
+    console.log("Category2:", selectedCategory2);
+    /*     console.log(
+      "Items:",
+      itemDropdowns.map((item) => item.value)
+    ); */
+    console.log(
+      "Items:",
+      itemDropdowns.map((item) => `${item.item} - ${item.quantity}`)
+    );
 
     navigation.navigate("ViewOrders");
   };
 
+  /*   const handleAddItemDropdown = () => {
+    const newItemDropdown = {
+      id: itemDropdowns.length + 1,
+      value: "",
+    };
+    setItemDropdowns([...itemDropdowns, newItemDropdown]);
+  }; */
+  const handleAddItemDropdown = () => {
+    const newItemDropdown = {
+      id: itemDropdowns.length + 1,
+      item: null,
+      quantity: "",
+    };
+    setItemDropdowns([...itemDropdowns, newItemDropdown]);
+  };
+
+  /*   const handleItemDropdownChange = (id, value) => {
+    const updatedItemDropdowns = itemDropdowns.map((item) =>
+      item.id === id ? { ...item, value } : item
+    );
+    setItemDropdowns(updatedItemDropdowns);
+  }; */
+  const handleItemChange = (id, itemIndex) => {
+    const updatedItemDropdowns = itemDropdowns.map((dropdown) =>
+      dropdown.id === id
+        ? { ...dropdown, item: dropdownItems[itemIndex] }
+        : dropdown
+    );
+    setItemDropdowns(updatedItemDropdowns);
+  };
+
+  const handleQuantityChange = (id, quantity) => {
+    const updatedItemDropdowns = itemDropdowns.map((dropdown) =>
+      dropdown.id === id ? { ...dropdown, quantity } : dropdown
+    );
+    setItemDropdowns(updatedItemDropdowns);
+  };
+
   return (
     <View style={styles.container}>
-      <View style={styles.card}>
-        <View style={styles.cardContent}>
-          <Text style={styles.heading}>Create Purchase Order</Text>
+      <ScrollView>
+        <View style={styles.card}>
+          <View style={styles.cardContent}>
+            <Text style={styles.heading}>Create Purchase Order</Text>
 
-          <Text style={styles.label}>Order No:</Text>
-          <TextInput
-            style={styles.underlineInput}
-            value={number}
-            onChangeText={(text) => setNumber(text)}
-            placeholder="Enter your order number"
-          />
+            <Text style={styles.label}>Order No:</Text>
+            <TextInput
+              style={styles.underlineInput}
+              value={number}
+              onChangeText={(text) => setNumber(text)}
+              placeholder="Enter your order number"
+            />
 
-          <Text style={styles.label}>Date:</Text>
-          <TextInput
-            style={styles.underlineInput}
-            value={date}
-            onChangeText={(text) => setDate(text)}
-            placeholder="Enter date"
-          />
+            <Text style={styles.label}>Date:</Text>
+            <TextInput
+              style={styles.underlineInput}
+              value={date}
+              onChangeText={(text) => setDate(text)}
+              placeholder="Enter date"
+            />
 
-          <Text style={styles.label}>Quantity:</Text>
-          <TextInput
-            style={styles.underlineInput}
-            value={quantity}
-            onChangeText={(text) => setQuantity(text)}
-            placeholder="Enter quantity"
-            keyboardType="phone-pad"
-          />
+            <Text style={styles.label}>Quantity:</Text>
+            <TextInput
+              style={styles.underlineInput}
+              value={quantity}
+              onChangeText={(text) => setQuantity(text)}
+              placeholder="Enter quantity"
+              keyboardType="phone-pad"
+            />
+            <Text style={styles.label}>Select Supplier:</Text>
+            <Picker
+              selectedValue={selectedSupplier}
+              onValueChange={(itemValue) => {
+                console.log("Picker Value Change:", itemValue);
+                handleSupplierChange(itemValue);
+              }}
+              style={styles.underlineInput}>
+              {suppliersFromDatabase.map((supplier) => (
+                <Picker.Item
+                  key={supplier.value}
+                  label={supplier.label}
+                  value={supplier.value}
+                />
+              ))}
+            </Picker>
 
-          <Text style={styles.label}>Select Supplier:</Text>
-          <Picker
-            selectedValue={selectedCategory1}
-            onValueChange={(itemValue) => setSelectedCategory1(itemValue)}
-            style={styles.underlineInput}>
-            <Picker.Item label="Supplier 1" value="Supplier 1" />
-            <Picker.Item label="Supplier 2" value="Supplier 2" />
-            <Picker.Item label="Supplier 3" value="Supplier 3" />
-            {/* Add more categories as needed */}
-          </Picker>
+            {/*             <Text style={styles.label}>Select Supplier:</Text>
+            <Picker
+              selectedValue={selectedCategory1}
+              onValueChange={(itemValue) => setSelectedCategory1(itemValue)}
+              style={styles.underlineInput}>
+              <Picker.Item label="Supplier 1" value="Supplier 1" />
+              <Picker.Item label="Supplier 2" value="Supplier 2" />
+              <Picker.Item label="Supplier 3" value="Supplier 3" />
+            
+            </Picker> */}
+            {/* 
+            <Text style={styles.label}>Item:</Text>
+            {itemDropdowns.map((item) => (
+              <View key={item.id}>
+                <Picker
+                  selectedValue={item.value}
+                  onValueChange={(itemValue) =>
+                    handleItemDropdownChange(item.id, itemValue)
+                  }
+                  style={styles.underlineInput}>
+                  <Picker.Item label="Item 1" value="Item 1" />
+                  <Picker.Item label="Item 2" value="Item 2" />
+                  <Picker.Item label="Item 3" value="Item 3" />
+                </Picker>
+              </View>
+            ))}
+            <TouchableOpacity onPress={handleAddItemDropdown}>
+              <Icon name="plus" size={20} color="#3498db" />
+            </TouchableOpacity> */}
 
-          <Text style={styles.label}>Item:</Text>
-          <Picker
-            selectedValue={selectedCategory2}
-            onValueChange={(itemValue) => setSelectedCategory2(itemValue)}
-            style={styles.underlineInput}>
-            <Picker.Item label="Item 1" value="Item 1" />
-            <Picker.Item label="Item 2" value="Item 2" />
-            <Picker.Item label="Item 3" value="Item 3" />
-            {/* Add more categories as needed */}
-          </Picker>
+            <Text style={styles.label}>Item:</Text>
+            {itemDropdowns.map((item, index) => (
+              <View key={item.id}>
+                <Picker
+                  selectedValue={dropdownItems.indexOf(item.item)}
+                  onValueChange={(itemIndex) =>
+                    handleItemChange(item.id, itemIndex)
+                  }
+                  style={styles.underlineInput}>
+                  {dropdownItems.map((dropdownItem, dropdownIndex) => (
+                    <Picker.Item
+                      key={dropdownIndex}
+                      label={dropdownItem}
+                      value={dropdownIndex}
+                    />
+                  ))}
+                </Picker>
 
-          <View style={styles.buttonContainer}>
-            <Button title="Submit" onPress={handleSubmit} />
+                <Text style={styles.label}>Quantity:</Text>
+                <TextInput
+                  style={styles.underlineInput}
+                  value={item.quantity}
+                  onChangeText={(text) => handleQuantityChange(item.id, text)}
+                  placeholder="Enter quantity"
+                  keyboardType="phone-pad"
+                />
+              </View>
+            ))}
+            <TouchableOpacity onPress={handleAddItemDropdown}>
+              <Icon name="plus" size={20} color="#3498db" />
+            </TouchableOpacity>
+
+            <View style={styles.buttonContainer}>
+              <Button title="Submit" onPress={handleSubmit} />
+            </View>
           </View>
         </View>
-      </View>
-      <Footer />
+      </ScrollView>
+      <Footer navigation={navigation} />
     </View>
   );
 };
@@ -105,6 +229,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#ffffff",
     margin: 20,
+    height: "auto",
     borderRadius: 10,
     shadowColor: "#000",
     shadowOffset: {

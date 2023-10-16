@@ -11,15 +11,54 @@ const PendingOrders = () => {
   }, []);
 
   const fetchOrders = () => {
+    fetch("https://procx-api-o9suw.ondigitalocean.app/api/orders", {
+      method: "GET",
+    })
+      .then((res) => {
+        return res.json();
+      })
+      .then((res) => {
+        console.log(res);
+        if (res) {
+          setOrders(res.orders);
+        }
+      })
+      .catch((err) => {
+        console.log(err);
+      });
     // Replace this with your actual API call to fetch orders
     // For now, we're using an empty array when no orders are available
-    const mockOrders = [
-      { id: 1, product: "Product 1", quantity: 5 },
-      { id: 2, product: "Product 2", quantity: 10 },
-      { id: 3, product: "Product 3", quantity: 3 },
+    /*     const mockOrders = [
+      {
+        id: 1,
+        item: "Item 1",
+        order: "Order 1",
+        quantity: 5,
+        date: "2021-05-01",
+        status: "Pending",
+        price: 1000,
+      },
+      {
+        id: 2,
+        item: "Item 2",
+        order: "Order 2",
+        quantity: 10,
+        date: "2021-05-01",
+        status: "Pending",
+        price: 1000,
+      },
+      {
+        id: 3,
+        item: "Item 3",
+        order: "Order 3",
+        quantity: 3,
+        date: "2021-05-01",
+        status: "Pending",
+        price: 1000,
+      },
     ];
 
-    setOrders(mockOrders);
+    setOrders(mockOrders); */
   };
 
   return (
@@ -34,12 +73,19 @@ const PendingOrders = () => {
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
               <View style={styles.orderItem}>
-                <Text
-                  style={styles.productText}>{`Product: ${item.product}`}</Text>
+                <Text style={styles.productText}>{`${item.orderNo}`}</Text>
                 <Text
                   style={
                     styles.quantityText
-                  }>{`Quantity: ${item.quantity}`}</Text>
+                  }>{`Item: ${item.deliverDate}`}</Text>
+                <Text
+                  style={
+                    styles.quantityText
+                  }>{`Quantity: ${item.supllier}`}</Text>
+                <Text style={styles.quantityText}>{`Date: ${item.item}`}</Text>
+                <Text style={styles.quantityText}>{`Status: ${item.qty}`}</Text>
+                {/*                 <Text
+                  style={styles.quantityText}>{`Price: ${item.price}`}</Text> */}
               </View>
             )}
           />

@@ -24,7 +24,8 @@ const SupplierViewOrders = () => {
     const mockOrders = [
       {
         id: 1,
-        product: "Product 1",
+        item: "Item 1",
+        order: "Order 1",
         quantity: 5,
         date: "2021-05-01",
         status: "Pending",
@@ -32,7 +33,8 @@ const SupplierViewOrders = () => {
       },
       {
         id: 2,
-        product: "Product 2",
+        item: "Item 2",
+        order: "Order 2",
         quantity: 10,
         date: "2021-05-01",
         status: "Pending",
@@ -40,7 +42,8 @@ const SupplierViewOrders = () => {
       },
       {
         id: 3,
-        product: "Product 3",
+        item: "Item 3",
+        order: "Order 3",
         quantity: 3,
         date: "2021-05-01",
         status: "Pending",
@@ -69,10 +72,9 @@ const SupplierViewOrders = () => {
             renderItem={({ item }) => (
               <TouchableOpacity onPress={() => handleCardClick(item)}>
                 <View style={styles.orderItem}>
+                  <Text style={styles.productText}>{`${item.order}`}</Text>
                   <Text
-                    style={
-                      styles.productText
-                    }>{`Product: ${item.product}`}</Text>
+                    style={styles.quantityText}>{`Item: ${item.item}`}</Text>
                   <Text
                     style={
                       styles.quantityText

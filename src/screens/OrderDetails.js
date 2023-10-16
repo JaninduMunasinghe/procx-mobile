@@ -9,6 +9,7 @@ import {
 } from "react-native";
 import Footer from "../components/Footer";
 import { useNavigation } from "@react-navigation/native";
+import { Table, Row } from "react-native-table-component";
 
 const OrderDetails = ({ route }) => {
   const navigation = useNavigation();
@@ -30,20 +31,22 @@ const OrderDetails = ({ route }) => {
     // Handle the logic for rejecting the order
     console.log("Order Rejected");
   };
+  const tableHead = ["Item", "Quantity"];
+  const tableData = [
+    [item.item, ""], // Product in the first column
+    ["", item.quantity], // Quantity in the second column
+  ];
 
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.scrollContainer}>
         <View style={styles.cardContainer}>
           <Text style={styles.heading}>Order Details</Text>
+
           <View style={styles.detailsContainer}>
             <View style={styles.detailItem}>
-              <Text style={styles.label}>Product:</Text>
-              <Text style={styles.value}>{item.product}</Text>
-            </View>
-            <View style={styles.detailItem}>
-              <Text style={styles.label}>Quantity:</Text>
-              <Text style={styles.value}>{item.quantity}</Text>
+              <Text style={styles.label}>Order ID:</Text>
+              <Text style={styles.value}>{item.OrderID}</Text>
             </View>
             <View style={styles.detailItem}>
               <Text style={styles.label}>Date:</Text>
@@ -57,6 +60,18 @@ const OrderDetails = ({ route }) => {
               <Text style={styles.label}>Price:</Text>
               <Text style={styles.value}>{`$${item.price.toFixed(2)}`}</Text>
             </View>
+            <Table borderStyle={{ borderWidth: 1, borderColor: "#C1C0B9" }}>
+              <Row
+                data={tableHead}
+                style={styles.head}
+                textStyle={{ ...styles.text, textAlign: "center" }}
+              />
+              <Row
+                data={tableData}
+                style={styles.row}
+                textStyle={{ ...styles.text, textAlign: "center" }}
+              />
+            </Table>
           </View>
         </View>
       </ScrollView>
@@ -89,7 +104,7 @@ const styles = StyleSheet.create({
   },
   cardContainer: {
     width: "90%",
-    height: "90%",
+    height: "auto",
     backgroundColor: "#ecf0f1",
     padding: 20,
     borderRadius: 20,
@@ -103,7 +118,7 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   detailsContainer: {
-    height: "85%",
+    height: "auto",
     backgroundColor: "#fff",
     borderRadius: 15,
     padding: 15,
@@ -112,7 +127,7 @@ const styles = StyleSheet.create({
   detailItem: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginBottom: 50,
+    marginBottom: 30,
   },
   label: {
     fontSize: 18,

@@ -19,43 +19,53 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { createMaterialBottomTabNavigator } from "@react-navigation/material-bottom-tabs";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { NativeBaseProvider } from "native-base";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
-    <SafeAreaView style={styles.container}>
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="ViewOrders">
-          <Stack.Screen name="Suppliers" component={Suppliers} />
-          <Stack.Screen name="ViewOrders" component={ViewOrders} />
-          <Stack.Screen name="PendingOrders" component={PendingOrders} />
-          <Stack.Screen name="ApprovedOrders" component={ApprovedOrders} />
-          <Stack.Screen name="RejectedOrders" component={RejectedOrders} />
-          <Stack.Screen name="OrderDetails" component={OrderDetails} />
-          <Stack.Screen name="SupplierApproved" component={SupplierApproved} />
-          <Stack.Screen name="Invoice" component={Invoice} />
-          <Stack.Screen
-            name="AppointmentScreen"
-            component={AppointmentsScreen}
-          />
-          <Stack.Screen
-            name="SupplierDashboard"
-            component={SupplierDashboard}
-          />
-          <Stack.Screen name="SupplierPending" component={SupplierPending} />
-          <Stack.Screen
-            name="SupplierCompleted"
-            component={SupplierCompleted}
-          />
-          <Stack.Screen name="SupplierRejected" component={SupplierRejected} />
-          <Stack.Screen
-            name="SupplierViewOrders"
-            component={SupplierViewOrders}
-          />
-        </Stack.Navigator>
-      </NavigationContainer>
-    </SafeAreaView>
+    <NativeBaseProvider>
+      <SafeAreaView style={styles.container}>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="ViewOrders">
+            <Stack.Screen name="Suppliers" component={Suppliers} />
+            <Stack.Screen name="ViewOrders" component={ViewOrders} />
+            <Stack.Screen name="PendingOrders" component={PendingOrders} />
+            <Stack.Screen name="ApprovedOrders" component={ApprovedOrders} />
+            <Stack.Screen name="RejectedOrders" component={RejectedOrders} />
+            <Stack.Screen name="OrderDetails" component={OrderDetails} />
+            <Stack.Screen
+              name="SupplierApproved"
+              component={SupplierApproved}
+            />
+            <Stack.Screen name="Invoice" component={Invoice} />
+            <Stack.Screen
+              name="AppointmentScreen"
+              component={AppointmentsScreen}
+            />
+            <Stack.Screen
+              name="SupplierDashboard"
+              component={SupplierDashboard}
+              options={{ title: "Dashboard" }}
+            />
+            <Stack.Screen name="SupplierPending" component={SupplierPending} />
+            <Stack.Screen
+              name="SupplierCompleted"
+              component={SupplierCompleted}
+            />
+            <Stack.Screen
+              name="SupplierRejected"
+              component={SupplierRejected}
+            />
+            <Stack.Screen
+              name="SupplierViewOrders"
+              component={SupplierViewOrders}
+            />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </SafeAreaView>
+    </NativeBaseProvider>
     /*     <NavigationContainer>
       <Stack.Navigator initialRouteName="Suppliers">
         <Stack.Screen name="Suppliers" component={Suppliers} />

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import Footer from "../components/Footer";
+import { API_PATHS, BASE_URL } from "../utils/constants";
 
 const SupplierPending = () => {
   const [orders, setOrders] = useState([]);
@@ -11,15 +12,16 @@ const SupplierPending = () => {
   }, []);
 
   const fetchOrders = () => {
-    // Replace this with your actual API call to fetch orders
-    // For now, we're using an empty array when no orders are available
-    const mockOrders = [
-      { id: 1, product: "Product 1", quantity: 5 },
-      { id: 2, product: "Product 2", quantity: 10 },
-      { id: 3, product: "Product 3", quantity: 3 },
-    ];
-
-    setOrders(mockOrders);
+    // send GET request with AXIOS
+    axios
+      .get(`${BASE_URL}${API_PATHS.ORDERS}`)
+      .then((res) => {
+        console.log(res);
+        // setOrders(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
   return (

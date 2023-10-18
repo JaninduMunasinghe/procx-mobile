@@ -8,89 +8,82 @@ import {
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import Footer from "../components/Footer";
+import { API_PATHS, BASE_URL } from "../utils/constants";
+import axios from "axios";
+import { Spinner } from "native-base";
 
 const SupplierViewOrders = () => {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
   const navigation = useNavigation();
 
   useEffect(() => {
-    // Simulating fetching orders from an API
     fetchOrders();
   }, []);
 
   const fetchOrders = () => {
-    // Replace this with your actual API call to fetch orders
-    // For now, we're using an empty array when no orders are available
-    const mockOrders = [
-      {
-        id: 1,
-        item: "Item 1",
-        order: "Order 1",
-        quantity: 5,
-        date: "2021-05-01",
-        status: "Pending",
-        price: 1000,
-      },
-      {
-        id: 2,
-        item: "Item 2",
-        order: "Order 2",
-        quantity: 10,
-        date: "2021-05-01",
-        status: "Pending",
-        price: 1000,
-      },
-      {
-        id: 3,
-        item: "Item 3",
-        order: "Order 3",
-        quantity: 3,
-        date: "2021-05-01",
-        status: "Pending",
-        price: 1000,
-      },
-    ];
-
-    setOrders(mockOrders);
+    // send GET request with AXIOS
+    axios
+      .get(`${BASE_URL}${API_PATHS.ORDERS}`)
+      .then((res) => {
+        setOrders(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   };
 
-  const handleCardClick = (item) => {
-    // Navigate to OrderDetails and pass the selected item as a parameter
+  const handleCardClick = (order) => {
     navigation.navigate("OrderDetails", { item });
   };
 
   return (
     <View style={styles.container}>
-      <Text style={styles.heading}>Supplier View Orders</Text>
+      <Text style={styles.heading}>Pending Orders</Text>
       <View style={styles.ordersContainer}>
-        {orders.length === 0 ? (
-          <Text style={styles.noOrdersText}>No orders available.</Text>
-        ) : (
-          <FlatList
-            data={orders}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <TouchableOpacity onPress={() => handleCardClick(item)}>
-                <View style={styles.orderItem}>
-                  <Text style={styles.productText}>{`${item.order}`}</Text>
-                  <Text
-                    style={styles.quantityText}>{`Item: ${item.item}`}</Text>
-                  <Text
-                    style={
-                      styles.quantityText
-                    }>{`Quantity: ${item.quantity}`}</Text>
-                  <Text
-                    style={styles.quantityText}>{`Date: ${item.date}`}</Text>
-                  <Text
-                    style={
-                      styles.quantityText
-                    }>{`Status: ${item.status}`}</Text>
-                  <Text
-                    style={styles.quantityText}>{`Price: ${item.price}`}</Text>
-                </View>
-              </TouchableOpacity>
+        {loading && (
+          <View style={styles.spinnerContainer}>
+            <Spinner size="lg" />
+          </View>
+        )}
+        {!loading && (
+          <>
+            {orders.length === 0 ? (
+              <Text style={styles.noOrdersText}>No orders available.</Text>
+            ) : (
+              <FlatList
+                data={orders}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => handleCardClick(item)}>
+                    <View style={styles.orderItem}>
+                      <Text style={styles.productText}>
+                        Order {item.orderNo}
+                      </Text>
+                      <Text style={styles.quantityText}>Item: {item.item}</Text>
+                      <Text
+                        style={
+                          styles.quantityText
+                        }>{`Quantity: ${item.quantity}`}</Text>
+                      <Text
+                        style={
+                          styles.quantityText
+                        }>{`Date: ${item.date}`}</Text>
+                      <Text
+                        style={
+                          styles.quantityText
+                        }>{`Status: ${item.status}`}</Text>
+                      <Text
+                        style={
+                          styles.quantityText
+                        }>{`Price: ${item.price}`}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              />
             )}
-          />
+          </>
         )}
       </View>
       <Footer navigation={navigation} />
@@ -115,8 +108,8 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
   ordersContainer: {
-    flex: 1, // Take up remaining space
-    minHeight: 100, // Set a minimum height
+    flex: 1,
+    minHeight: 100,
   },
   noOrdersText: {
     textAlign: "center",
@@ -146,6 +139,15 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: "#555",
     alignContent: "center",
+  },
+  loadingText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#555",
+  },
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
 });
 

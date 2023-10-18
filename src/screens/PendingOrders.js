@@ -1,64 +1,29 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, FlatList } from "react-native";
 import Footer from "../components/Footer";
+import axios from "axios";
+import { API_PATHS, BASE_URL } from "../utils/constants";
 
 const PendingOrders = () => {
   const [orders, setOrders] = useState([]);
 
   useEffect(() => {
-    // Simulating fetching orders from an API
-    fetchOrders();
+    // fetchOrders();
   }, []);
 
   const fetchOrders = () => {
-    fetch("https://procx-api-o9suw.ondigitalocean.app/api/orders", {
-      method: "GET",
-    })
-      .then((res) => {
-        return res.json();
+    // send GET request with AXIOS
+    axios
+      .post(`${BASE_URL}${API_PATHS.ORDERS}`, {
+        status: "pending",
       })
       .then((res) => {
         console.log(res);
-        if (res) {
-          setOrders(res.orders);
-        }
+        setOrders(res.data);
       })
       .catch((err) => {
         console.log(err);
       });
-    // Replace this with your actual API call to fetch orders
-    // For now, we're using an empty array when no orders are available
-    /*     const mockOrders = [
-      {
-        id: 1,
-        item: "Item 1",
-        order: "Order 1",
-        quantity: 5,
-        date: "2021-05-01",
-        status: "Pending",
-        price: 1000,
-      },
-      {
-        id: 2,
-        item: "Item 2",
-        order: "Order 2",
-        quantity: 10,
-        date: "2021-05-01",
-        status: "Pending",
-        price: 1000,
-      },
-      {
-        id: 3,
-        item: "Item 3",
-        order: "Order 3",
-        quantity: 3,
-        date: "2021-05-01",
-        status: "Pending",
-        price: 1000,
-      },
-    ];
-
-    setOrders(mockOrders); */
   };
 
   return (
@@ -84,8 +49,6 @@ const PendingOrders = () => {
                   }>{`Quantity: ${item.supllier}`}</Text>
                 <Text style={styles.quantityText}>{`Date: ${item.item}`}</Text>
                 <Text style={styles.quantityText}>{`Status: ${item.qty}`}</Text>
-                {/*                 <Text
-                  style={styles.quantityText}>{`Price: ${item.price}`}</Text> */}
               </View>
             )}
           />

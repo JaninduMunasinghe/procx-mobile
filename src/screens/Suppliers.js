@@ -102,7 +102,7 @@ const Suppliers = () => {
   return (
     <View style={styles.container}>
       <ScrollView>
-        <View style={styles.card}>
+        <View>
           <View style={styles.cardContent}>
             <Text style={styles.heading}>Create Purchase Order</Text>
 

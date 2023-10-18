@@ -3,23 +3,27 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { API_PATHS, BASE_URL } from "../utils/constants";
+import { Spinner } from "native-base";
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 
 const PendingOrders = () => {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // fetchOrders();
+    // Simulating fetching orders from an API
+    fetchOrders();
   }, []);
 
   const fetchOrders = () => {
     // send GET request with AXIOS
     axios
-      .post(`${BASE_URL}${API_PATHS.ORDERS}`, {
-        status: "pending",
-      })
+      .get(`${BASE_URL}${API_PATHS.ORDERS}`)
       .then((res) => {
-        console.log(res);
         setOrders(res.data);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -30,31 +34,51 @@ const PendingOrders = () => {
     <View style={styles.container}>
       <Text style={styles.heading}>Pending Orders</Text>
       <View style={styles.ordersContainer}>
-        {orders.length === 0 ? (
-          <Text style={styles.noOrdersText}>No orders available.</Text>
-        ) : (
-          <FlatList
-            data={orders}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.orderItem}>
-                <Text style={styles.productText}>{`${item.orderNo}`}</Text>
-                <Text
-                  style={
-                    styles.quantityText
-                  }>{`Item: ${item.deliverDate}`}</Text>
-                <Text
-                  style={
-                    styles.quantityText
-                  }>{`Quantity: ${item.supllier}`}</Text>
-                <Text style={styles.quantityText}>{`Date: ${item.item}`}</Text>
-                <Text style={styles.quantityText}>{`Status: ${item.qty}`}</Text>
-              </View>
+        {loading && (
+          <View style={styles.spinnerContainer}>
+            <Spinner size="lg" />
+          </View>
+        )}
+        {!loading && (
+          <>
+            {orders.length === 0 ? (
+              <Text style={styles.noOrdersText}>No orders available.</Text>
+            ) : (
+              <FlatList
+                data={orders}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => handleCardClick(item)}>
+                    <View style={styles.orderItem}>
+                      <Text style={styles.productText}>
+                        Order {item.orderNo}
+                      </Text>
+                      <Text style={styles.quantityText}>Item: {item.item}</Text>
+                      <Text
+                        style={
+                          styles.quantityText
+                        }>{`Quantity: ${item.quantity}`}</Text>
+                      <Text
+                        style={
+                          styles.quantityText
+                        }>{`Date: ${item.deliverDate}`}</Text>
+                      <Text
+                        style={
+                          styles.quantityText
+                        }>{`Status: ${item.status}`}</Text>
+                      <Text
+                        style={
+                          styles.quantityText
+                        }>{`Price: ${item.price}`}</Text>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              />
             )}
-          />
+          </>
         )}
       </View>
-      <Footer />
+      <Footer navigation={navigation} />
     </View>
   );
 };
@@ -106,6 +130,15 @@ const styles = StyleSheet.create({
   quantityText: {
     fontSize: 16,
     color: "#555",
+  },
+  loadingText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#555",
+  },
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: "center",
   },
 });
 

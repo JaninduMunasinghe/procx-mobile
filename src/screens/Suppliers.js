@@ -12,6 +12,7 @@ import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome";
 import Footer from "../components/Footer";
 import { useNavigation } from "@react-navigation/native";
+import { API_PATHS, BASE_URL } from "../utils/constants";
 
 const Suppliers = () => {
   const navigation = useNavigation();
@@ -19,19 +20,48 @@ const Suppliers = () => {
   const [number, setNumber] = useState("");
   const [date, setDate] = useState("");
   const [quantity, setQuantity] = useState("");
+  const [allSuppliers, setAllSuppliers] = useState([]);
+  const [allItems, setAllItems] = useState([]);
+
   const [selectedSupplier, setSelectedSupplier] = useState(null);
   const [selectedCategory1, setSelectedCategory1] = useState("");
   const [selectedCategory2, setSelectedCategory2] = useState("");
+
+  useEffect(() => {
+    fetchSuppliers();
+    fetchItems();
+  }, []);
+
+  const fetchSuppliers = () => {
+    // send GET request with AXIOS
+    axios
+      .get(`${BASE_URL}${API_PATHS.SUPPLIERS}`)
+      .then((res) => {
+        setAllSuppliers(res.data);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
+  const fetchItems = () => {
+    // send GET request with AXIOS
+    axios
+      .get(`${BASE_URL}${API_PATHS.ITEMS}`)
+      .then((res) => {
+        setAllItems(res.data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
+
   /* const [itemDropdowns, setItemDropdowns] = useState([{ id: 1, value: "" }]); */
   const [itemDropdowns, setItemDropdowns] = useState([
     { id: 1, item: "item 1", quantity: "" },
   ]);
 
-  const suppliersFromDatabase = [
-    { label: "Supplier 1", value: "Supplier 1" },
-    { label: "Supplier 2", value: "Supplier 2" },
-    // Fetch more suppliers from the database
-  ];
   const handleSupplierChange = (value) => {
     console.log("Selected Supplier:", value);
     setSelectedSupplier(value);
@@ -42,23 +72,30 @@ const Suppliers = () => {
   const dropdownItems = ["Item 1", "Item 2", "Item 3"];
 
   const handleSubmit = () => {
-    // Handle form submission here
-    console.log("Form submitted!");
-    console.log("number:", number);
-    console.log("date:", date);
-    console.log("quantity:", quantity);
-    console.log("Category1:", selectedCategory1);
-    console.log("Category2:", selectedCategory2);
-    /*     console.log(
-      "Items:",
-      itemDropdowns.map((item) => item.value)
-    ); */
-    console.log(
-      "Items:",
-      itemDropdowns.map((item) => `${item.item} - ${item.quantity}`)
-    );
+    // send POST request with AXIO
+    axios
+      .post("https://procx-api-o9suw.ondigitalocean.app/api/orders", {
+        orderNo: number,
+        deliverDate: date,
+        qty: quantity,
+        supllier: selectedSupplier,
+        item: "testItem2",
+      })
+      .then((res) => {
+        console.log(res);
+        showToast();
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+  };
 
-    navigation.navigate("ViewOrders");
+  const showToast = () => {
+    Toast.show({
+      type: "success",
+      text1: "Order created!",
+      text2: "Your order has been created successfully!",
+    });
   };
 
   /*   const handleAddItemDropdown = () => {
@@ -138,11 +175,11 @@ const Suppliers = () => {
                 handleSupplierChange(itemValue);
               }}
               style={styles.underlineInput}>
-              {suppliersFromDatabase.map((supplier) => (
+              {allSuppliers.map((supplier) => (
                 <Picker.Item
                   key={supplier.value}
-                  label={supplier.label}
-                  value={supplier.value}
+                  label={supplier.name}
+                  value={supplier.name}
                 />
               ))}
             </Picker>

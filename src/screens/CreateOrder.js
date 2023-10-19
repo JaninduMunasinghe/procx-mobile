@@ -21,7 +21,6 @@ const CreateOrder = () => {
   const [orderCreateLoading, setOrderCreateLoading] = useState(false);
   const [itemCreateLoading, setItemCreateLoading] = useState(false);
   const [currentItem, setCurrentItem] = useState(1);
-  const [orderId, setOrderId] = useState(null);
 
   const [number, setNumber] = useState("");
   const [date, setDate] = useState("");
@@ -134,13 +133,9 @@ const CreateOrder = () => {
       })
       .then((res) => {
         // showToast();
-        setOrderId(res.data.id);
-        console.log(orderId);
-      })
-      .then(() => {
         setOrderCreateLoading(false);
-        if (selectedItems.length > 0 && orderId) {
-          createOrderItems(selectedItems);
+        if (selectedItems.length > 0 && res.data.id) {
+          createOrderItems(selectedItems, res.data.id);
         }
       })
       .catch((err) => {
@@ -154,7 +149,7 @@ const CreateOrder = () => {
 
   // create order items function
   // loop through the selected items array for each item and send an API request for each item
-  const createOrderItems = (selectedItems) => {
+  const createOrderItems = (selectedItems, orderId) => {
     selectedItems.forEach((item, index) => {
       setItemCreateLoading(true);
       const selectedItem = allItems.find(

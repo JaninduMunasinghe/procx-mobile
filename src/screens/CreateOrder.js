@@ -193,6 +193,16 @@ const CreateOrder = () => {
   //     console.log(err);
   //   });
 
+  // axios
+  //   .post(`${BASE_URL}${API_PATHS.ENDPOINT_HERE}`)
+  //   .then((res) => {
+  //     console.log(res);
+  //     showToast();
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
+
   const showToast = () => {
     Toast.show({
       type: "success",

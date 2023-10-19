@@ -30,7 +30,7 @@ const ViewOrders = () => {
 
   const navigateToSuppliers = () => {
     // Navigate to FourthCard component
-    navigation.navigate("Suppliers");
+    navigation.navigate("CreateOrder");
   };
 
   return (

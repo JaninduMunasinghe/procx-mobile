@@ -3,7 +3,6 @@ import {
   View,
   Text,
   TextInput,
-  Button,
   StyleSheet,
   TouchableOpacity,
   ScrollView,
@@ -14,10 +13,15 @@ import Footer from "../components/Footer";
 import { useNavigation } from "@react-navigation/native";
 import { API_PATHS, BASE_URL } from "../utils/constants";
 import axios from "axios";
-import { Spinner } from "native-base";
+import { Button, Spinner } from "native-base";
 
 const CreateOrder = () => {
   const navigation = useNavigation();
+
+  const [orderCreateLoading, setOrderCreateLoading] = useState(false);
+  const [itemCreateLoading, setItemCreateLoading] = useState(false);
+  const [currentItem, setCurrentItem] = useState(1);
+  const [orderId, setOrderId] = useState(null);
 
   const [number, setNumber] = useState("");
   const [date, setDate] = useState("");
@@ -25,14 +29,67 @@ const CreateOrder = () => {
 
   const [fetchLoading, setFetchLoading] = useState(true);
 
-  // store fetched data
   const [allSuppliers, setAllSuppliers] = useState([]);
   const [allItems, setAllItems] = useState([]);
 
   const [selectedSupplier, setSelectedSupplier] = useState("");
   const [selectedItems, setSelectedItems] = useState([]);
 
-  const [supplierItems, setSupplierItems] = useState([]);
+  const [numItems, setNumItems] = useState(1);
+
+  const handleItemChange = (itemValue, itemKey) => {
+    const item = allItems.find((item) => item.itemName === itemValue);
+    if (item) {
+      setSelectedItems((prevSelectedItems) => {
+        const updatedSelectedItems = [...prevSelectedItems];
+        const selectedItemIndex = updatedSelectedItems.findIndex(
+          (item) => item.key === itemKey
+        );
+        if (selectedItemIndex !== -1) {
+          updatedSelectedItems[selectedItemIndex] = {
+            key: itemKey,
+            itemId: item.id, // Store item ID
+            itemName: itemValue,
+            qty: updatedSelectedItems[selectedItemIndex].qty,
+          };
+        } else {
+          updatedSelectedItems.push({
+            key: itemKey,
+            itemId: item.id,
+            itemName: itemValue,
+            qty: "",
+          });
+        }
+        return updatedSelectedItems;
+      });
+    }
+  };
+
+  const handleQuantityChange = (quantity, itemKey) => {
+    setSelectedItems((prevSelectedItems) => {
+      const updatedSelectedItems = [...prevSelectedItems];
+      const selectedItemIndex = updatedSelectedItems.findIndex(
+        (item) => item.key === itemKey
+      );
+      if (selectedItemIndex !== -1) {
+        updatedSelectedItems[selectedItemIndex] = {
+          key: itemKey,
+          itemId: updatedSelectedItems[selectedItemIndex].itemId,
+          itemName: updatedSelectedItems[selectedItemIndex].itemName,
+          qty: quantity,
+        };
+      }
+      return updatedSelectedItems;
+    });
+  };
+
+  useEffect(() => {
+    console.log(selectedItems);
+  }, [selectedItems]);
+
+  const handleAddItem = () => {
+    setNumItems((prevNumItems) => prevNumItems + 1);
+  };
 
   useEffect(() => {
     fetchSuppliers();
@@ -62,45 +119,29 @@ const CreateOrder = () => {
       });
   };
 
-  /* const [itemDropdowns, setItemDropdowns] = useState([{ id: 1, value: "" }]); */
-  // const [itemDropdowns, setItemDropdowns] = useState([
-  //   { id: 1, item: "item 1", quantity: "" },
-  // ]);
-
   const handleSupplierChange = (value) => {
     setSelectedSupplier(value);
-
-    // Fetch items for the selected supplier
-    const supplierId = allSuppliers.find(
-      (supplier) => supplier.name === value
-    )?.id;
-    fetchSupplierItems(supplierId);
-  };
-
-  const fetchSupplierItems = (supplierId) => {
-    axios
-      .get(`${BASE_URL}${API_PATHS.SUPPLIERS}/${supplierId}${API_PATHS.ITEMS}`)
-      .then((res) => {
-        setSupplierItems(res.data);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-  };
-
-  // onchange for item dropdown -> add the selected item details to a state (array)
-  const handleItemChange = (value) => {
-    setSelectedItems((prevState) => [...prevState, value]);
   };
 
   const handleSubmit = () => {
+    setOrderCreateLoading(true);
     // create empty order for supplier
+
     axios
-      .post(`${BASE_URL}${API_PATHS.ORDERS}`)
+      .post(`${BASE_URL}${API_PATHS.SUPPLIERS}/${selectedSupplier}/orders`, {
+        orderNo: number,
+        deliverDate: date,
+      })
       .then((res) => {
-        console.log(res);
-        showToast();
-        createOrderItems(selectedItems);
+        // showToast();
+        setOrderId(res.data.id);
+        console.log(orderId);
+      })
+      .then(() => {
+        setOrderCreateLoading(false);
+        if (selectedItems.length > 0 && orderId) {
+          createOrderItems(selectedItems);
+        }
       })
       .catch((err) => {
         console.log(err);
@@ -114,19 +155,43 @@ const CreateOrder = () => {
   // create order items function
   // loop through the selected items array for each item and send an API request for each item
   const createOrderItems = (selectedItems) => {
-    // use foreach to send the request for each item
-    // send POST request with AXIOS
-    // TODO: change the endpoint
-    // axios
-    //   .post(`${BASE_URL}${API_PATHS.ENDPOINT_HERE}`)
-    //   .then((res) => {
-    //     console.log(res);
-    //     showToast();
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
+    selectedItems.forEach((item, index) => {
+      setItemCreateLoading(true);
+      const selectedItem = allItems.find(
+        (allItem) => allItem.id === item.itemId
+      );
+
+      if (selectedItem) {
+        axios
+          .post(`${BASE_URL}${API_PATHS.ORDERS}/${orderId}/items`, {
+            itemName: selectedItem.itemName,
+            restricted: selectedItem.restricted,
+            description: selectedItem.description,
+            imageUrl: selectedItem.imageUrl,
+            price: selectedItem.price,
+            qty: item.qty,
+          })
+          .then((res) => {
+            console.log(res.data);
+            setCurrentItem(index + 1);
+            setItemCreateLoading(false);
+          })
+          .catch((err) => {
+            console.log(err);
+            setItemCreateLoading(false);
+          });
+      }
+    });
   };
+  // axios
+  //   .post(`${BASE_URL}${API_PATHS.ENDPOINT_HERE}`)
+  //   .then((res) => {
+  //     console.log(res);
+  //     showToast();
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   });
 
   const showToast = () => {
     Toast.show({
@@ -146,7 +211,21 @@ const CreateOrder = () => {
               <Spinner size="lg" />
             </View>
           )}
-          {!fetchLoading && (
+          {orderCreateLoading && (
+            <View style={styles.spinnerContainer}>
+              <Spinner size="lg" />
+              <Text style={styles.loadingText}>Creating order...</Text>
+            </View>
+          )}
+          {itemCreateLoading && (
+            <View style={styles.spinnerContainer}>
+              <Spinner size="lg" />
+              <Text style={styles.loadingText}>
+                Adding items ({currentItem})...
+              </Text>
+            </View>
+          )}
+          {!fetchLoading && !orderCreateLoading && !itemCreateLoading && (
             <>
               <Text style={styles.label}>Order No:</Text>
               <TextInput
@@ -163,18 +242,7 @@ const CreateOrder = () => {
                 onChangeText={(text) => setDate(text)}
                 placeholder="Enter date"
               />
-
-              {/* <Text style={styles.label}>Quantity:</Text>
-              <TextInput
-                style={styles.underlineInput}
-                value={quantity}
-                onChangeText={(text) => setQuantity(text)}
-                placeholder="Enter quantity"
-                keyboardType="phone-pad"
-              />
-              */}
-
-              {/*               <Text style={styles.label}>Select Supplier:</Text>
+              <Text style={styles.label}>Select Supplier:</Text>
               <Picker
                 selectedValue={selectedSupplier}
                 onValueChange={(itemValue) => {
@@ -186,62 +254,49 @@ const CreateOrder = () => {
                   <Picker.Item
                     key={supplier.id}
                     label={supplier.name}
-                    value={supplier.name}
+                    value={supplier.id}
                   />
                 ))}
-              </Picker> */}
+              </Picker>
 
-              {/* <Text style={styles.label}>Select Supplier:</Text>
-            <Picker
-              selectedValue={selectedCategory1}
-              onValueChange={(itemValue) => setSelectedCategory1(itemValue)}
-              style={styles.underlineInput}>
-              <Picker.Item label="Supplier 1" value="Supplier 1" />
-              <Picker.Item label="Supplier 2" value="Supplier 2" />
-              <Picker.Item label="Supplier 3" value="Supplier 3" />
-           
-            </Picker> */}
-              {/*
-            <Text style={styles.label}>Item:</Text>
-            {itemDropdowns.map((item) => (
-              <View key={item.id}>
-                <Picker
-                  selectedValue={item.value}
-                  onValueChange={(itemValue) =>
-                    handleItemDropdownChange(item.id, itemValue)
-                  }
-                  style={styles.underlineInput}>
-                  <Picker.Item label="Item 1" value="Item 1" />
-                  <Picker.Item label="Item 2" value="Item 2" />
-                  <Picker.Item label="Item 3" value="Item 3" />
-                </Picker>
-              </View>
-            ))}
-            <TouchableOpacity onPress={handleAddItemDropdown}>
-              <Icon name="plus" size={20} color="#3498db" />
-            </TouchableOpacity> */}
+              <Text style={styles.label}>Items</Text>
 
-              {/*               <Text style={styles.label}>Item:</Text>
               <View>
-                <Picker
-                  selectedValue={selectedItems}
-                  onValueChange={(itemValue) => handleItemChange(itemValue)}
-                  style={styles.underlineInput}>
-                  {supplierItems.map((item) => (
-                    <Picker.Item
-                      key={item.id}
-                      label={item.itemName}
-                      value={item.itemName}
+                {Array.from({ length: numItems }, (_, index) => (
+                  <View key={`itemRow${index}`} style={styles.itemRow}>
+                    <Picker
+                      key={`itemPicker${index}`}
+                      selectedValue={selectedItems[index]?.itemName || ""}
+                      onValueChange={(itemValue) =>
+                        handleItemChange(itemValue, index)
+                      }
+                      style={styles.underlineInput}>
+                      {allItems.map((item) => (
+                        <Picker.Item
+                          key={item.id}
+                          label={item.itemName}
+                          value={item.itemName}
+                        />
+                      ))}
+                    </Picker>
+                    <TextInput
+                      key={`quantityInput${index}`}
+                      style={styles.underlineInput}
+                      value={selectedItems[index]?.qty || ""}
+                      onChangeText={(text) => handleQuantityChange(text, index)}
+                      placeholder="Enter quantity"
+                      keyboardType="phone-pad"
                     />
-                  ))}
-                </Picker>
-              </View> */}
-              <TouchableOpacity>
-                <Icon name="plus" size={20} color="#3498db" />
-              </TouchableOpacity>
+                  </View>
+                ))}
+
+                <TouchableOpacity onPress={handleAddItem}>
+                  <Icon name="plus" size={20} color="#3498db" />
+                </TouchableOpacity>
+              </View>
 
               <View style={styles.buttonContainer}>
-                <Button title="Submit" onPress={handleSubmit} />
+                <Button onPress={handleSubmit}>Submit</Button>
               </View>
             </>
           )}
@@ -301,7 +356,17 @@ const styles = StyleSheet.create({
   spinnerContainer: {
     height: 500,
     flex: 1,
+    alignItems: "center",
     justifyContent: "center",
+  },
+  itemRow: {
+    backgroundColor: "#d4eafa",
+    marginBottom: 15,
+    padding: 10,
+    borderRadius: 10,
+  },
+  loadingText: {
+    marginTop: 10,
   },
 });
 

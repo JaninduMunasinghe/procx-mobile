@@ -133,7 +133,6 @@ const CreateOrder = () => {
       })
       .then((res) => {
         // showToast();
-        console.log(res.data.id);
         setOrderCreateLoading(false);
         if (selectedItems.length > 0 && res.data.id) {
           createOrderItems(selectedItems, res.data.id);
@@ -151,9 +150,8 @@ const CreateOrder = () => {
   // create order items function
   // loop through the selected items array for each item and send an API request for each item
   const createOrderItems = (selectedItems, orderId) => {
-    setItemCreateLoading(true);
-
     selectedItems.forEach((item, index) => {
+      setItemCreateLoading(true);
       const selectedItem = allItems.find(
         (allItem) => allItem.id === item.itemId
       );

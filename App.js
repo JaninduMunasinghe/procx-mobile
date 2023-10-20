@@ -3,13 +3,14 @@ import ViewOrders from "./src/screens/ViewOrders";
 import PendingOrders from "./src/screens/PendingOrders";
 import ApprovedOrders from "./src/screens/ApprovedOrders";
 import RejectedOrders from "./src/screens/RejectedOrders";
-import SupplierViewOrders from "./src/screens/SupplierViewOrders";
 import OrderDetails from "./src/screens/OrderDetails";
 import SupplierDashboard from "./src/screens/SupplierDashboard";
 import SupplierApproved from "./src/screens/SupplierApproved";
 import SupplierPending from "./src/screens/SupplierPending";
 import SupplierRejected from "./src/screens/SupplierRejected";
 import SupplierCompleted from "./src/screens/SupplierCompleted";
+import SupplierPendingOrders from "./src/screens/supplier/PendingOrders";
+import ViewOrder from "./src/screens/supplier/ViewOrder";
 import Invoice from "./src/screens/Invoice";
 import AppointmentsScreen from "./src/screens/AppointmentScreen";
 import "react-native-gesture-handler";
@@ -56,9 +57,10 @@ export default function App() {
               component={SupplierRejected}
             />
             <Stack.Screen
-              name="SupplierViewOrders"
-              component={SupplierViewOrders}
+              name="SupplierPendingOrders"
+              component={SupplierPendingOrders}
             />
+            <Stack.Screen name="ViewOrder" component={ViewOrder} />
           </Stack.Navigator>
         </NavigationContainer>
       </SafeAreaView>

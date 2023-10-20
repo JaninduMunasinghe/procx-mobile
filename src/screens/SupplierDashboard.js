@@ -15,7 +15,7 @@ const SupplierDashboard = () => {
 
   const navigateToPendingOrders = () => {
     // Navigate to PendingOrder component
-    navigation.navigate("SupplierViewOrders");
+    navigation.navigate("SupplierPendingOrders");
   };
 
   const navigateToApproveOrders = () => {

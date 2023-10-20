@@ -3,23 +3,27 @@ import { View, Text, StyleSheet, FlatList } from "react-native";
 import Footer from "../components/Footer";
 import axios from "axios";
 import { API_PATHS, BASE_URL } from "../utils/constants";
+import { Spinner } from "native-base";
+import { useNavigation } from "@react-navigation/native";
+import { TouchableOpacity } from "react-native";
 
 const PendingOrders = () => {
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const navigation = useNavigation();
 
   useEffect(() => {
-    // fetchOrders();
+    // Simulating fetching orders from an API
+    fetchOrders();
   }, []);
 
   const fetchOrders = () => {
     // send GET request with AXIOS
     axios
-      .post(`${BASE_URL}${API_PATHS.ORDERS}`, {
-        status: "pending",
-      })
+      .get(`${BASE_URL}${API_PATHS.ORDERS}`)
       .then((res) => {
-        console.log(res);
         setOrders(res.data);
+        setLoading(false);
       })
       .catch((err) => {
         console.log(err);
@@ -30,31 +34,56 @@ const PendingOrders = () => {
     <View style={styles.container}>
       <Text style={styles.heading}>Pending Orders</Text>
       <View style={styles.ordersContainer}>
-        {orders.length === 0 ? (
-          <Text style={styles.noOrdersText}>No orders available.</Text>
-        ) : (
-          <FlatList
-            data={orders}
-            keyExtractor={(item) => item.id.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.orderItem}>
-                <Text style={styles.productText}>{`${item.orderNo}`}</Text>
-                <Text
-                  style={
-                    styles.quantityText
-                  }>{`Item: ${item.deliverDate}`}</Text>
-                <Text
-                  style={
-                    styles.quantityText
-                  }>{`Quantity: ${item.supllier}`}</Text>
-                <Text style={styles.quantityText}>{`Date: ${item.item}`}</Text>
-                <Text style={styles.quantityText}>{`Status: ${item.qty}`}</Text>
-              </View>
+        {loading && (
+          <View style={styles.spinnerContainer}>
+            <Spinner size="lg" />
+          </View>
+        )}
+        {!loading && (
+          <>
+            {orders.length === 0 ? (
+              <Text style={styles.noOrdersText}>No orders available.</Text>
+            ) : (
+              <FlatList
+                data={orders}
+                keyExtractor={(item) => item.id.toString()}
+                renderItem={({ item }) => (
+                  <TouchableOpacity onPress={() => handleCardClick(item)}>
+                    <View style={styles.orderItem}>
+                      <Text style={styles.productText}>
+                        Order {item.orderNo}
+                      </Text>
+                      <Text style={styles.quantityText}>
+                        Supplier: {item.supplier ? item.supplier.name : "N/A"}
+                      </Text>
+                      <Text style={styles.quantityText}>
+                        Delivery Date: {item.deliverDate}
+                      </Text>
+                      <View style={styles.tableContainer}>
+                        <View style={styles.tableRow}>
+                          <Text style={styles.tableHeader}>Item</Text>
+                          <Text style={styles.tableHeader}>Quantity</Text>
+                        </View>
+                        {item.items.map((itemDetail) => (
+                          <View key={itemDetail.id} style={styles.tableRow}>
+                            <Text style={styles.tableCell}>
+                              {itemDetail.itemName}
+                            </Text>
+                            <Text style={styles.tableCell}>
+                              {itemDetail.qty}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
+                    </View>
+                  </TouchableOpacity>
+                )}
+              />
             )}
-          />
+          </>
         )}
       </View>
-      <Footer />
+      <Footer navigation={navigation} />
     </View>
   );
 };
@@ -87,7 +116,7 @@ const styles = StyleSheet.create({
   orderItem: {
     marginBottom: 20,
     padding: 15,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#d8e4fa",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#f1f1f1", // Border color
@@ -104,6 +133,55 @@ const styles = StyleSheet.create({
     color: "#3498db",
   },
   quantityText: {
+    fontSize: 16,
+    color: "#555",
+  },
+  loadingText: {
+    textAlign: "center",
+    fontSize: 16,
+    color: "#555",
+  },
+  spinnerContainer: {
+    flex: 1,
+    justifyContent: "center",
+  },
+  itemRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  column: {
+    flex: 1,
+    marginRight: 10,
+  },
+  columnHeader: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#3498db",
+  },
+  columnText: {
+    fontSize: 16,
+    color: "#555",
+  },
+  tableContainer: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: "#3498db",
+    borderRadius: 10,
+    padding: 10,
+  },
+  tableRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 5,
+  },
+  tableHeader: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#3498db",
+  },
+  tableCell: {
     fontSize: 16,
     color: "#555",
   },

@@ -30,6 +30,42 @@ const PendingOrders = () => {
       });
   };
 
+  const handleDeleteOrder = (orderId) => {
+    setLoading(true);
+    // Fetch order details to get item IDs
+    axios
+      .get(`${BASE_URL}${API_PATHS.ORDERS}/${orderId}`)
+      .then((response) => {
+        const order = response.data;
+
+        // Extract item IDs from the order
+        const itemIds = order.items.map((item) => item.id);
+
+        // Delete items
+        return Promise.all(
+          itemIds.map((itemId) =>
+            axios.delete(`${BASE_URL}${API_PATHS.ITEMS}/${itemId}`)
+          )
+        );
+      })
+      .then(() => {
+        // After deleting items, delete the order
+        return axios.delete(`${BASE_URL}${API_PATHS.ORDERS}/${orderId}`);
+      })
+      .then(() => {
+        // Remove the deleted order from the state
+        setOrders((prevOrders) =>
+          prevOrders.filter((order) => order.id !== orderId)
+        );
+        setLoading(false);
+        // You can also show a success message if needed
+      })
+      .catch((error) => {
+        console.log("Error deleting order:", error);
+        // Handle error, show error message, etc.
+      });
+  };
+
   return (
     <View style={styles.container}>
       <Text style={styles.heading}>Pending Orders</Text>
@@ -48,10 +84,20 @@ const PendingOrders = () => {
                 data={orders}
                 keyExtractor={(item) => item.id.toString()}
                 renderItem={({ item }) => (
-                  <TouchableOpacity onPress={() => handleCardClick(item)}>
+                  <TouchableOpacity>
                     <View style={styles.orderItem}>
+                      <View style={styles.deleteButtonContainer}>
+                        <TouchableOpacity
+                          style={styles.deleteButton}
+                          onPress={() => handleDeleteOrder(item.id)}>
+                          <Text style={styles.deleteButtonText}>Delete</Text>
+                        </TouchableOpacity>
+                      </View>
                       <Text style={styles.productText}>
-                        Order {item.orderNo}
+                        Order Number-{item.id}
+                      </Text>
+                      <Text style={styles.productText}>
+                        Order Name:-{item.orderNo}
                       </Text>
                       <Text style={styles.quantityText}>
                         Supplier: {item.supplier ? item.supplier.name : "N/A"}
@@ -184,6 +230,19 @@ const styles = StyleSheet.create({
   tableCell: {
     fontSize: 16,
     color: "#555",
+  },
+  deleteButtonContainer: {
+    marginTop: 10,
+    alignItems: "flex-end",
+  },
+  deleteButton: {
+    backgroundColor: "#e74c3c",
+    padding: 5,
+    borderRadius: 5,
+    marginTop: -10,
+  },
+  deleteButtonText: {
+    color: "#fff",
   },
 });
 

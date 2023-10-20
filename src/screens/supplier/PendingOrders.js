@@ -1,22 +1,28 @@
 import React, { useState, useEffect } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-} from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 import { API_PATHS, BASE_URL, SORT_METHOD } from "../../utils/constants";
 import axios from "axios";
 import { sortOrders } from "../../utils/helpers/supplier/sortOrders";
 import Footer from "../../components/Footer";
-import { Center, ScrollView, Spinner } from "native-base";
+import {
+  Button,
+  HStack,
+  Icon,
+  Popover,
+  ScrollView,
+  Spinner,
+  VStack,
+} from "native-base";
 import OrderCard from "../../components/OrderCard";
+import { MaterialIcons } from "@expo/vector-icons/MaterialIcons";
+import SortButton from "../../components/Common/SortButton";
 
 const SupplierPendingOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [sortMethod, setSortMethod] = useState(SORT_METHOD.DESCENDING);
+  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -24,15 +30,18 @@ const SupplierPendingOrders = () => {
   }, []);
 
   useEffect(() => {
-    setOrders(sortOrders(orders, SORT_METHOD.DESCENDING));
-  }, [orders]);
+    setOrders(sortOrders(orders, sortMethod));
+  }, [sortMethod]);
 
   const fetchOrders = () => {
     // send GET request with AXIOS
     axios
       .get(`${BASE_URL}${API_PATHS.ORDERS}`)
       .then((res) => {
-        setOrders(res.data);
+        const fetchedOrders = res.data;
+        const sortedOrders = sortOrders(fetchedOrders, sortMethod);
+        setOrders(sortedOrders); // Update orders after fetching data
+
         setLoading(false);
       })
       .catch((err) => {
@@ -42,6 +51,12 @@ const SupplierPendingOrders = () => {
 
   const handleCardClick = (order) => {
     navigation.navigate("ViewOrder", { item: order });
+  };
+
+  const handleSortMethodChange = (method) => {
+    setSortMethod(method);
+    setIsPopoverOpen(false); // Close the Popover after selecting a sort method
+    setOrders(sortOrders(orders, method));
   };
 
   return (
@@ -55,6 +70,15 @@ const SupplierPendingOrders = () => {
         <ScrollView>
           {!loading && (
             <>
+              <HStack justifyContent="flex-end" mb={2}>
+                <SortButton
+                  sortMethod={sortMethod}
+                  setSortMethod={setSortMethod}
+                  isPopoverOpen={isPopoverOpen}
+                  setIsPopoverOpen={setIsPopoverOpen}
+                  handleSortMethodChange={handleSortMethodChange}
+                />
+              </HStack>
               {orders.length === 0 ? (
                 <Text style={styles.noOrdersText}>No orders available.</Text>
               ) : (
@@ -115,6 +139,10 @@ const styles = StyleSheet.create({
   spinnerContainer: {
     flex: 1,
     justifyContent: "center",
+  },
+  sortButton: {
+    alignSelf: "center",
+    marginBottom: 10,
   },
 });
 

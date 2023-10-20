@@ -6,6 +6,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert,
 } from "react-native";
 import { Picker } from "@react-native-picker/picker";
 import Icon from "react-native-vector-icons/FontAwesome";
@@ -14,6 +15,8 @@ import { useNavigation } from "@react-navigation/native";
 import { API_PATHS, BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { Button, Spinner } from "native-base";
+import ViewOrders from "./ViewOrders";
+import { showAlert } from "../utils/helpers/common/showAlert";
 
 const CreateOrder = () => {
   const navigation = useNavigation();
@@ -137,6 +140,8 @@ const CreateOrder = () => {
         if (selectedItems.length > 0 && res.data.id) {
           createOrderItems(selectedItems, res.data.id);
         }
+        showAlert("Success", "Order created successfully!");
+        navigation.navigate("ViewOrders");
       })
       .catch((err) => {
         console.log(err);
@@ -178,25 +183,6 @@ const CreateOrder = () => {
       }
     });
   };
-  // axios
-  //   .post(`${BASE_URL}${API_PATHS.ENDPOINT_HERE}`)
-  //   .then((res) => {
-  //     console.log(res);
-  //     showToast();
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
-
-  // axios
-  //   .post(`${BASE_URL}${API_PATHS.ENDPOINT_HERE}`)
-  //   .then((res) => {
-  //     console.log(res);
-  //     showToast();
-  //   })
-  //   .catch((err) => {
-  //     console.log(err);
-  //   });
 
   const showToast = () => {
     Toast.show({
@@ -232,12 +218,12 @@ const CreateOrder = () => {
           )}
           {!fetchLoading && !orderCreateLoading && !itemCreateLoading && (
             <>
-              <Text style={styles.label}>Order No:</Text>
+              <Text style={styles.label}>Order Name:</Text>
               <TextInput
                 style={styles.underlineInput}
                 value={number}
                 onChangeText={(text) => setNumber(text)}
-                placeholder="Enter your order number"
+                placeholder="Enter your order name"
               />
 
               <Text style={styles.label}>Date:</Text>

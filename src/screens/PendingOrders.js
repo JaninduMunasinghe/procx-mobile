@@ -6,6 +6,8 @@ import { API_PATHS, BASE_URL } from "../utils/constants";
 import { Spinner } from "native-base";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native";
+import LoadingSpinner from "../components/LoadingSpinner";
+import { showAlert } from "../utils/helpers/common/showAlert";
 
 const PendingOrders = () => {
   const [orders, setOrders] = useState([]);
@@ -58,6 +60,7 @@ const PendingOrders = () => {
           prevOrders.filter((order) => order.id !== orderId)
         );
         setLoading(false);
+        showAlert("Success", "Order deleted successfully!");
         // You can also show a success message if needed
       })
       .catch((error) => {
@@ -70,11 +73,7 @@ const PendingOrders = () => {
     <View style={styles.container}>
       <Text style={styles.heading}>Pending Orders</Text>
       <View style={styles.ordersContainer}>
-        {loading && (
-          <View style={styles.spinnerContainer}>
-            <Spinner size="lg" />
-          </View>
-        )}
+        {loading && <LoadingSpinner />}
         {!loading && (
           <>
             {orders.length === 0 ? (
@@ -186,10 +185,6 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 16,
     color: "#555",
-  },
-  spinnerContainer: {
-    flex: 1,
-    justifyContent: "center",
   },
   itemRow: {
     flexDirection: "row",

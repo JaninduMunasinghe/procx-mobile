@@ -53,23 +53,28 @@ const PendingOrders = () => {
                       <Text style={styles.productText}>
                         Order {item.orderNo}
                       </Text>
-                      <Text style={styles.quantityText}>Item: {item.item}</Text>
-                      <Text
-                        style={
-                          styles.quantityText
-                        }>{`Quantity: ${item.quantity}`}</Text>
-                      <Text
-                        style={
-                          styles.quantityText
-                        }>{`Date: ${item.deliverDate}`}</Text>
-                      <Text
-                        style={
-                          styles.quantityText
-                        }>{`Status: ${item.status}`}</Text>
-                      <Text
-                        style={
-                          styles.quantityText
-                        }>{`Price: ${item.price}`}</Text>
+                      <Text style={styles.quantityText}>
+                        Supplier: {item.supplier ? item.supplier.name : "N/A"}
+                      </Text>
+                      <Text style={styles.quantityText}>
+                        Delivery Date: {item.deliverDate}
+                      </Text>
+                      <View style={styles.tableContainer}>
+                        <View style={styles.tableRow}>
+                          <Text style={styles.tableHeader}>Item</Text>
+                          <Text style={styles.tableHeader}>Quantity</Text>
+                        </View>
+                        {item.items.map((itemDetail) => (
+                          <View key={itemDetail.id} style={styles.tableRow}>
+                            <Text style={styles.tableCell}>
+                              {itemDetail.itemName}
+                            </Text>
+                            <Text style={styles.tableCell}>
+                              {itemDetail.qty}
+                            </Text>
+                          </View>
+                        ))}
+                      </View>
                     </View>
                   </TouchableOpacity>
                 )}
@@ -111,7 +116,7 @@ const styles = StyleSheet.create({
   orderItem: {
     marginBottom: 20,
     padding: 15,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#d8e4fa",
     borderRadius: 10,
     borderWidth: 1,
     borderColor: "#f1f1f1", // Border color
@@ -139,6 +144,46 @@ const styles = StyleSheet.create({
   spinnerContainer: {
     flex: 1,
     justifyContent: "center",
+  },
+  itemRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  column: {
+    flex: 1,
+    marginRight: 10,
+  },
+  columnHeader: {
+    fontSize: 16,
+    fontWeight: "bold",
+    marginBottom: 5,
+    color: "#3498db",
+  },
+  columnText: {
+    fontSize: 16,
+    color: "#555",
+  },
+  tableContainer: {
+    marginTop: 10,
+    borderWidth: 1,
+    borderColor: "#3498db",
+    borderRadius: 10,
+    padding: 10,
+  },
+  tableRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 5,
+  },
+  tableHeader: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#3498db",
+  },
+  tableCell: {
+    fontSize: 16,
+    color: "#555",
   },
 });
 

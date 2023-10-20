@@ -5,7 +5,27 @@ export const API_PATHS = {
   SUPPLIERS: "/suppliers",
   ITEMS: "/items",
   USERS: "/users",
-  //   LOGIN: "/login",
-  //   REGISTER: "/register",
-  //   LOGOUT: "/logout",
+};
+
+export const URGENT_STATUS = {
+  LOW: "Low",
+  MEDIUM: "Medium",
+  URGENT: "Urgent",
+  PAST: "Due",
+};
+
+export const NO_OF_DAYS = {
+  TODAY: "Today",
+  TOMORROW: "Tomorrow",
+};
+
+export const ORDER_STATUS = {
+  PENDING: "Pending",
+  DELIVERED: "Delivered",
+  CANCELLED: "Cancelled",
+};
+
+export const SORT_METHOD = {
+  ASCENDING: "ASCENDING",
+  DESCENDING: "DEsCENDING",
 };

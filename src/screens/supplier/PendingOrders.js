@@ -8,6 +8,7 @@ import Footer from "../../components/Footer";
 import {
   Button,
   HStack,
+  Heading,
   Icon,
   Popover,
   ScrollView,
@@ -15,7 +16,6 @@ import {
   VStack,
 } from "native-base";
 import OrderCard from "../../components/OrderCard";
-import { MaterialIcons } from "@expo/vector-icons/MaterialIcons";
 import SortButton from "../../components/Common/SortButton";
 
 const SupplierPendingOrders = () => {
@@ -70,7 +70,8 @@ const SupplierPendingOrders = () => {
         <ScrollView>
           {!loading && (
             <>
-              <HStack justifyContent="flex-end" mb={2}>
+              <HStack justifyContent="space-between" alignItems="center" mb={5}>
+                <Heading size="md">Pending Orders</Heading>
                 <SortButton
                   sortMethod={sortMethod}
                   setSortMethod={setSortMethod}

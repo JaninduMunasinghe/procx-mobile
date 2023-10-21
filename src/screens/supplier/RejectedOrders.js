@@ -25,7 +25,7 @@ import OrderCard from "../../components/OrderCard";
 import SortButton from "../../components/Common/SortButton";
 import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
-const SupplierPendingOrders = () => {
+const SupplierRejectedOrders = () => {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [sortMethod, setSortMethod] = useState(SORT_METHOD.DESCENDING);
@@ -50,7 +50,7 @@ const SupplierPendingOrders = () => {
           (order) =>
             (order.orderStatus === ORDER_APPROVAL_STATUS.APPROVED ||
               order.managerstatus === ORDER_APPROVAL_STATUS.APPROVED) &&
-            order.supplierstatus === ORDER_APPROVAL_STATUS.PENDING
+            order.supplierstatus === ORDER_APPROVAL_STATUS.REJECTED
         );
         const sortedOrders = sortOrders(filteredOrders, sortMethod);
         setOrders(sortedOrders); // Update orders after fetching data
@@ -83,7 +83,7 @@ const SupplierPendingOrders = () => {
           {!loading && (
             <>
               <HStack justifyContent="space-between" alignItems="center" mb={5}>
-                <Heading size="md">Pending Orders</Heading>
+                <Heading size="md">Rejected Orders</Heading>
                 <HStack>
                   <Button
                     mr={2}
@@ -175,4 +175,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SupplierPendingOrders;
+export default SupplierRejectedOrders;

@@ -20,17 +20,17 @@ const SupplierDashboard = () => {
 
   const navigateToApproveOrders = () => {
     // Navigate to ApproveOrders component
-    navigation.navigate("SupplierApproved");
+    navigation.navigate("SupplierApprovedOrders");
   };
 
   const navigateToRejectedOrders = () => {
     // Navigate to RejectedOrders component
-    navigation.navigate("SupplierRejected");
+    navigation.navigate("SupplierRejectedOrders");
   };
 
   const navigateToCompleted = () => {
     // Navigate to FourthCard component
-    navigation.navigate("SupplierCompleted");
+    navigation.navigate("SupplierCompletedOrders");
   };
 
   return (
@@ -49,7 +49,7 @@ const SupplierDashboard = () => {
             onPress={navigateToApproveOrders}
             style={styles.card}>
             <Icon name="check" size={40} color="#2ecc71" />
-            <Text style={styles.cardTitle}>Approve Orders</Text>
+            <Text style={styles.cardTitle}>Accepted</Text>
           </TouchableOpacity>
         </View>
 
@@ -58,7 +58,7 @@ const SupplierDashboard = () => {
             onPress={navigateToRejectedOrders}
             style={styles.card}>
             <Icon name="times" size={40} color="#e74c3c" />
-            <Text style={styles.cardTitle}>Rejected Orders</Text>
+            <Text style={styles.cardTitle}>Rejected</Text>
           </TouchableOpacity>
           <TouchableOpacity onPress={navigateToCompleted} style={styles.card}>
             <Icon name="plus-circle" size={40} color="#f39c12" />

@@ -1,5 +1,14 @@
-// get date function. accepts iso date string. returns in the format Month Date, Year
 export const getDate = (date) => {
+  if (!date) {
+    return "";
+  }
+
+  const parsedDate = new Date(date);
+
+  if (isNaN(parsedDate.getTime())) {
+    return "";
+  }
+
   const options = { year: "numeric", month: "long", day: "numeric" };
-  return new Date(date).toLocaleDateString(undefined, options);
+  return parsedDate.toLocaleDateString(undefined, options);
 };

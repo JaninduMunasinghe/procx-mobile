@@ -108,7 +108,7 @@ const OrderCard = (Props) => {
                     bottom={1}
                     position="absolute"
                     right={1}
-                    w="6"
+                    // w="6"
                     px="1"
                     py="0.5"
                     rounded={5}>

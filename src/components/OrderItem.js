@@ -1,7 +1,8 @@
-import { Text } from "native-base";
+import { Button, Text } from "native-base";
 import { Box, Center, HStack, Heading, Image, Stack } from "native-base";
 import React from "react";
 import { ITEM_RESTRICTION } from "../utils/constants";
+import { formatPrice } from "../utils/helpers/supplier/formatPrice";
 
 const OrderItem = (Props) => {
   return (
@@ -48,11 +49,18 @@ const OrderItem = (Props) => {
             {Props.item?.description}
           </Text>
         </Stack>
-        <Text fontWeight="400">Bengaluru</Text>
-        <HStack
-          alignItems="center"
-          space="4"
-          justifyContent="space-between"></HStack>
+        <HStack>
+          <Text fontWeight="400">Unit Price: </Text>
+          <Heading size="sm">{formatPrice(Props.item?.price)} LKR</Heading>
+        </HStack>
+        <HStack mt={-2}>
+          <Text fontWeight="400">Qty: </Text>
+          <Heading size="sm">{Props.item?.qty}</Heading>
+          <Text ml={1} fontWeight="400">
+            Units
+          </Text>
+        </HStack>
+        <Text fontSize={12}>ID: {Props.item?.id}</Text>
       </Stack>
     </Stack>
   );

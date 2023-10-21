@@ -14,10 +14,11 @@ import Footer from "../components/Footer";
 import { useNavigation } from "@react-navigation/native";
 import { API_PATHS, BASE_URL } from "../utils/constants";
 import axios from "axios";
-import { Button, Spinner } from "native-base";
+import { Button } from "native-base";
 import ViewOrders from "./ViewOrders";
 import { showAlert } from "../utils/helpers/common/showAlert";
 import { getDistinctItems } from "../utils/helpers/supplier/getDistinctItems";
+import LoadingSpinner from "../components/LoadingSpinner";
 
 const CreateOrder = () => {
   const navigation = useNavigation();
@@ -200,20 +201,16 @@ const CreateOrder = () => {
       <ScrollView>
         <View style={styles.cardContent}>
           <Text style={styles.heading}>Create Purchase Order</Text>
-          {fetchLoading && (
-            <View style={styles.spinnerContainer}>
-              <Spinner size="lg" />
-            </View>
-          )}
+          {fetchLoading && <LoadingSpinner />}
           {orderCreateLoading && (
             <View style={styles.spinnerContainer}>
-              <Spinner size="lg" />
+              <LoadingSpinner size="lg" />
               <Text style={styles.loadingText}>Creating order...</Text>
             </View>
           )}
           {itemCreateLoading && (
             <View style={styles.spinnerContainer}>
-              <Spinner size="lg" />
+              <LoadingSpinner size="lg" />
               <Text style={styles.loadingText}>
                 Adding items ({currentItem})...
               </Text>
@@ -346,12 +343,6 @@ const styles = StyleSheet.create({
   buttonContainer: {
     marginTop: 20,
     alignSelf: "stretch", // Ensure the button takes the full width
-  },
-  spinnerContainer: {
-    height: 500,
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
   },
   itemRow: {
     backgroundColor: "#d4eafa",

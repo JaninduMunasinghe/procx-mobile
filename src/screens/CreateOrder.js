@@ -17,6 +17,7 @@ import axios from "axios";
 import { Button, Spinner } from "native-base";
 import ViewOrders from "./ViewOrders";
 import { showAlert } from "../utils/helpers/common/showAlert";
+import { getDistinctItems } from "../utils/helpers/supplier/getDistinctItems";
 
 const CreateOrder = () => {
   const navigation = useNavigation();
@@ -101,7 +102,8 @@ const CreateOrder = () => {
     axios
       .get(`${BASE_URL}${API_PATHS.SUPPLIERS}`)
       .then((res) => {
-        setAllSuppliers(res.data);
+        let distinctItems = getDistinctItems(res.data, "name");
+        setAllSuppliers(distinctItems);
         fetchItems();
       })
       .catch((err) => {
@@ -113,7 +115,8 @@ const CreateOrder = () => {
     axios
       .get(`${BASE_URL}${API_PATHS.ITEMS}`)
       .then((res) => {
-        setAllItems(res.data);
+        let distinctItems = getDistinctItems(res.data, "itemName");
+        setAllItems(distinctItems);
         setFetchLoading(false);
       })
       .catch((err) => {
@@ -218,7 +221,7 @@ const CreateOrder = () => {
           )}
           {!fetchLoading && !orderCreateLoading && !itemCreateLoading && (
             <>
-              <Text style={styles.label}>Order Name:</Text>
+              <Text style={styles.label}>Order Reference:</Text>
               <TextInput
                 style={styles.underlineInput}
                 value={number}
@@ -226,7 +229,7 @@ const CreateOrder = () => {
                 placeholder="Enter your order name"
               />
 
-              <Text style={styles.label}>Date:</Text>
+              <Text style={styles.label}>Required Date:</Text>
               <TextInput
                 style={styles.underlineInput}
                 value={date}

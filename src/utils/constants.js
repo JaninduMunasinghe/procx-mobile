@@ -29,3 +29,8 @@ export const SORT_METHOD = {
   ASCENDING: "ASCENDING",
   DESCENDING: "DEsCENDING",
 };
+
+export const ITEM_RESTRICTION = {
+  RESTRICTED: "Restricted",
+  NOT_RESTRICTED: "Not Restricted",
+};

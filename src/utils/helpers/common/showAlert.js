@@ -10,6 +10,8 @@ export const showAlert = (title, message) => {
         onPress: () => console.log("OK Pressed"),
       },
     ],
-    { cancelable: false }
+    {
+      cancelable: false,
+    }
   );
 };

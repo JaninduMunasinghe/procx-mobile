@@ -14,6 +14,7 @@ import { getNoOfDays } from "../utils/helpers/supplier/getNoOfDays";
 import { getDeliveryUrgency } from "../utils/helpers/supplier/getDeliveryUrgency";
 import { URGENT_STATUS } from "../utils/constants";
 import { useEffect, useState } from "react";
+import { formatPrice } from "../utils/helpers/supplier/formatPrice";
 
 const OrderCard = (Props) => {
   const [urgency, setUrgency] = useState(URGENT_STATUS.LOW);
@@ -80,7 +81,7 @@ const OrderCard = (Props) => {
               )}
             </HStack>
             <Heading size="sm">
-              Order total: {calculateOrderTotal(Props.items)} LKR
+              Order total: {formatPrice(calculateOrderTotal(Props.items))} LKR
             </Heading>
           </Stack>
           <HStack alignItems="center" space={4} justifyContent="space-between">
